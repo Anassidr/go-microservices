@@ -12,13 +12,13 @@ import (
 )
 
 func main() {
+
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
-	hh := handlers.NewHello(l)
-	gh := handlers.NewGoodbye(l)
+
+	ph := handlers.NewProducts(l)
 
 	sm := http.NewServeMux()
-	sm.Handle("/", hh)
-	sm.Handle("/goodbye", gh)
+	sm.Handle("/", ph)
 
 	s := &http.Server{
 		Addr:         ":9090",
@@ -37,11 +37,11 @@ func main() {
 		}
 	}()
 
-	sigChan := make(chan os.Signal)
+	sigChan := make(chan os.Signal) //create a new channel of signals, receive notifications for interrupt signals
 	signal.Notify(sigChan, os.Interrupt)
 	signal.Notify(sigChan, os.Kill)
 
-	sig := <-sigChan
+	sig := <-sigChan //wait for a signal to be sent to sigChan
 	l.Println("Received terminate, graceful shutdown", sig)
 
 	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)

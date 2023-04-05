@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-//Creating a handler
+//Implementing an HTTP handler
 
 type Hello struct {
 	l *log.Logger
@@ -16,6 +16,8 @@ type Hello struct {
 func NewHello(l *log.Logger) *Hello {
 	return &Hello{l}
 }
+
+// method of the Hello struct : handler function called by net/http
 
 func (h *Hello) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
