@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/anassidr/go-microservices/handlers"
+	"github.com/gorilla/mux"
 	"golang.org/x/net/context"
 )
 
@@ -17,8 +18,13 @@ func main() {
 
 	ph := handlers.NewProducts(l)
 
-	sm := http.NewServeMux()
-	sm.Handle("/", ph)
+	sm := mux.NewRouter()
+
+	getRouter := sm.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", ph.GetProducts)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", ph.UpdateProducts)
 
 	s := &http.Server{
 		Addr:         ":9090",
