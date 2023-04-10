@@ -17,6 +17,9 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
+//serveHTTP is called indirectly by serveMux
+//serverHTTP is a Products method
+
 func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		p.getProducts(rw, r)
