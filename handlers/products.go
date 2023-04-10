@@ -29,7 +29,7 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPut {
-		// expect the id in the URI
+		// expect the id in the URI, all this regexp code is just to retrieve the id from the URL!
 		reg := regexp.MustCompile(`/([0-9]+)`)
 		g := reg.FindAllStringSubmatch(r.URL.Path, -1)
 		if len(g) != 1 {
@@ -78,7 +78,9 @@ func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
 
 func (p Products) updateProducts(id int, rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle PUT Products")
+
 	prod := &data.Product{}
+
 	err := prod.FromJSON(r.Body)
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal JSON", http.StatusBadRequest)
