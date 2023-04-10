@@ -17,7 +17,7 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
-func (p *Products) addProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) AddProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST Products")
 	prod := &data.Product{}
 	err := prod.FromJSON(r.Body)
