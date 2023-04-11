@@ -1,6 +1,6 @@
 // Package classification of Product API
 //
-// Documentation for Product API
+// Documentation for Product API.
 //
 // Schemes: http
 // BasePath: /
