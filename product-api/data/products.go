@@ -13,7 +13,7 @@ type Product struct {
 	ID          int     `json:"id"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
-	Price       float32 `json:"price"`
+	Price       float32 `json:"price" validate:"gt=0"` //gt for greater than
 	SKU         string  `json:"sku"`
 	CreatedOn   string  `json:"-"`
 	UpdatedOn   string  `json:"-"`
