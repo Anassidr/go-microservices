@@ -59,22 +59,31 @@ func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 
 }
 
+// defining this middleware function in order to avoid writing it inside very handler function
+// code reuse
+// The middleware function is responsible for performing validation of incoming product data
+// and then passing the request down the middleware chain to the next handler function
+
 type KeyProduct struct{}
 
+// using a value receiver instead of pointer receiver since we do not need ot modify the Products object, only access its properties
+
 func (p Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		prod := data.Product{}
+	return http.HandlerFunc(
 
-		err := prod.FromJSON(r.Body)
-		if err != nil {
-			p.l.Println("[ERROR] deserializing product", err)
-			http.Error(rw, "Unable to unmarshal JSON", http.StatusBadRequest)
-			return
-		}
+		func(rw http.ResponseWriter, r *http.Request) {
+			prod := data.Product{}
 
-		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
-		req := r.WithContext(ctx)
+			err := prod.FromJSON(r.Body)
+			if err != nil {
+				p.l.Println("[ERROR] deserializing product", err)
+				http.Error(rw, "Unable to unmarshal JSON", http.StatusBadRequest)
+				return
+			}
 
-		next.ServeHTTP(rw, req)
-	})
+			ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
+			req := r.WithContext(ctx)
+
+			next.ServeHTTP(rw, req)
+		})
 }
