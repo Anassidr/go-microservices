@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -77,10 +78,18 @@ func (p Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
 			err := prod.FromJSON(r.Body)
 			if err != nil {
 				p.l.Println("[ERROR] deserializing product", err)
+				http.Error(rw, fmt.Sprintf("Error validating product: %s", err), http.StatusBadRequest)
+				return
+			}
+			//validate the product
+			err = prod.Validate()
+			if err != nil {
+				p.l.Println("[ERROR] validating product", err)
 				http.Error(rw, "Unable to unmarshal JSON", http.StatusBadRequest)
 				return
 			}
 
+			//add the product to the context
 			ctx := context.WithValue(r.Context(), KeyProduct{}, prod) //Withvalue method on the context object is used to add a key-value pair to the context object
 			req := r.WithContext(ctx)
 
