@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/anassidr/go-microservices/product-api/data"
@@ -15,32 +14,37 @@ import (
 
 // using a value receiver instead of pointer receiver since we do not need ot modify the Products object, only access its properties
 
-func (p Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
-	return http.HandlerFunc(
+func (p *Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		prod := &data.Product{}
 
-		func(rw http.ResponseWriter, r *http.Request) {
-			prod := data.Product{}
+		err := data.FromJSON(prod, r.Body)
+		if err != nil {
+			p.l.Println("[ERROR] deserializing product", err)
 
-			err := prod.FromJSON(r.Body)
-			if err != nil {
-				p.l.Println("[ERROR] deserializing product", err)
-				http.Error(rw, fmt.Sprintf("Error validating product: %s", err), http.StatusBadRequest)
-				return
-			}
-			//validate the product
-			err = prod.Validate()
-			if err != nil {
-				p.l.Println("[ERROR] validating product", err)
-				http.Error(rw, "Unable to unmarshal JSON", http.StatusBadRequest)
-				return
-			}
+			rw.WriteHeader(http.StatusBadRequest)
+			data.ToJSON(&GenericError{Message: err.Error()}, rw)
+			return
+		}
 
-			//add the product to the context
-			ctx := context.WithValue(r.Context(), KeyProduct{}, prod) //Withvalue method on the context object is used to add a key-value pair to the context object
-			req := r.WithContext(ctx)
+		// validate the product
+		errs := p.v.Validate(prod)
+		if len(errs) != 0 {
+			p.l.Println("[ERROR] validating product", errs)
 
-			next.ServeHTTP(rw, req) //call the next handler in the middleware
-		})
+			// return the validation messages as an array
+			rw.WriteHeader(http.StatusUnprocessableEntity)
+			data.ToJSON(&ValidationError{Messages: errs.Errors()}, rw)
+			return
+		}
+
+		// add the product to the context
+		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
+		r = r.WithContext(ctx)
+
+		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		next.ServeHTTP(rw, r)
+	})
 }
 
 //request object goes from client to server, through the middleware functions that modify the request (context or headers)
