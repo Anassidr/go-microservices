@@ -5,3 +5,4 @@
 - Middleware functions
 - Writing custom validations with Govalidator 
 - Go routines 
+- Documenting with Swagger
