@@ -1,11 +1,9 @@
-consumes:
-    - application/json
-info:
-    title: Go Microservices
-    version: 0.1.0
-paths: {}
-produces:
-    - application/json
-schemes:
-    - http
+info: {}
+paths:
+    /products:
+        get:
+            description: Returns a list of products
+            operationId: listProducts
+            tags:
+                - products
 swagger: "2.0"

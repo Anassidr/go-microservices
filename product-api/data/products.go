@@ -1,9 +1,7 @@
 package data
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"regexp"
 	"time"
 
@@ -43,19 +41,6 @@ func validateSKU(fl validator.FieldLevel) bool {
 // Products is a collection of Product
 type Products []*Product
 
-// ToJSON serializes the contents of the collection to JSON
-// NewEncoder provides better performance than json.Unmarshal as it does not have to buffer the output to an in memory slice of bytes
-// this reduces allocations and the overheads of the service
-func (p *Products) ToJSON(w io.Writer) error {
-	e := json.NewEncoder(w)
-	return e.Encode(p)
-}
-
-func (p *Product) FromJSON(r io.Reader) error {
-	e := json.NewDecoder(r)
-	return e.Decode(p)
-}
-
 func GetProducts() Products {
 	return productList
 }
@@ -70,13 +55,14 @@ func getNextID() int {
 	return lp.ID + 1
 }
 
-func UpdateProduct(id int, p *Product) error {
-	_, pos, err := findProduct(id)
-	if err != nil {
-		return err
+func UpdateProduct(p Product) error {
+	i := findIndexByProductID(p.ID)
+	if i == -1 {
+		return ErrProductNotFound
 	}
-	p.ID = id
-	productList[pos] = p
+
+	// update the product in the DB
+	productList[i] = &p
 
 	return nil
 }
@@ -111,4 +97,14 @@ var productList = []*Product{
 		CreatedOn:   time.Now().UTC().String(),
 		UpdatedOn:   time.Now().UTC().String(),
 	},
+}
+
+func findIndexByProductID(id int) int {
+	for i, p := range productList {
+		if p.ID == id {
+			return i
+		}
+	}
+
+	return -1
 }
