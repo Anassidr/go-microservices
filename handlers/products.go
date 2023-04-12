@@ -7,7 +7,10 @@
 // Version: 1.0.0
 //
 // Consumes:
-// -application/json
+// - application/json
+//
+// Produces:
+// - application/json
 // swagger:meta
 
 package handlers
