@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/anassidr/go-microservices/product-api/data"
+	"github.com/anassidr/go-microservices/data"
 )
 
 // defining this middleware function in order to avoid writing it inside very handler function
