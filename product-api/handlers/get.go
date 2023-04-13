@@ -26,7 +26,7 @@ func (p *Products) ListAll(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// swagger:route GET /products/{id} products litSingleProduct
+// swagger:route GET /products/{id} products listSingleProduct
 // Return a list of products from the database
 // responses:
 // 	200: productResponse

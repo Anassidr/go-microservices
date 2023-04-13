@@ -135,7 +135,15 @@ paths:
                 - products
         get:
             description: Return a list of products from the database
-            operationId: litSingleProduct
+            operationId: listSingleProduct
+            parameters:
+                - description: The id of the product for which the operation relates
+                  format: int64
+                  in: path
+                  name: id
+                  required: true
+                  type: integer
+                  x-go-name: ID
             responses:
                 "200":
                     $ref: '#/responses/productResponse'
