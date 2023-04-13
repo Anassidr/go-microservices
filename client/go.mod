@@ -1,4 +1,4 @@
-module go-microservices
+module github.com/anassidr/go-microservices/client
 
 go 1.18
 
