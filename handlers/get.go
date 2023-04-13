@@ -9,7 +9,7 @@ import (
 // swagger:route GET /products products listProducts
 // Returns a list of products
 // responses:
-//	200: productsResponse
+// 		200: productsResponse
 
 // GetProducts returns the products from the data store
 

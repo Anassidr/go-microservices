@@ -10,14 +10,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// A list of products returns in the response
-// swagger:response productsResponse
-type productsResponse struct {
-	// All products in the system
-	// in: body
-	Body []data.Product
-}
-
 // KeyProduct is a key used for the Product object in the context
 type KeyProduct struct{}
 
