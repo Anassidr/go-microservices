@@ -42,11 +42,11 @@ func main() {
 	deleteR.HandleFunc("/products/{id:[0-9]+}", ph.Delete)
 
 	// handler for documentation
-	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yml"}
 	sh := middleware.Redoc(opts, nil)
 
 	getR.Handle("/docs", sh)
-	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
+	getR.Handle("/swagger.yml", http.FileServer(http.Dir("./")))
 
 	// create a new server
 	s := http.Server{
