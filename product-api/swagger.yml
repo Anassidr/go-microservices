@@ -45,7 +45,7 @@ definitions:
             - price
             - sku
         type: object
-        x-go-package: github.com/anassidr/go-microservices/product-api/data
+        x-go-package: github.com/anassidr/go-microservices/data
     ValidationError:
         description: ValidationError is a collection of validation error messages
         properties:
@@ -103,13 +103,6 @@ paths:
                   required: true
                   schema:
                     $ref: '#/definitions/Product'
-                - description: The id of the product for which the operation relates
-                  format: int64
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-                  x-go-name: ID
             responses:
                 "201":
                     $ref: '#/responses/noContentResponse'
@@ -123,12 +116,30 @@ paths:
         delete:
             description: Update a product's details
             operationId: deleteProduct
+            parameters:
+                - description: The id of the product for which the operation relates
+                  format: int64
+                  in: path
+                  name: id
+                  required: true
+                  type: integer
+                  x-go-name: ID
             responses:
                 "201":
                     $ref: '#/responses/noContentResponse'
                 "404":
                     $ref: '#/responses/errorResponse'
                 "501":
+                    $ref: '#/responses/errorResponse'
+            tags:
+                - products
+        get:
+            description: Return a list of products from the database
+            operationId: litSingleProduct
+            responses:
+                "200":
+                    $ref: '#/responses/productResponse'
+                "404":
                     $ref: '#/responses/errorResponse'
             tags:
                 - products
