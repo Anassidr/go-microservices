@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/anassidr/go-microservices/data"
+	"github.com/anassidr/go-microservices/product-api/data"
 	"github.com/gorilla/mux"
 )
 
