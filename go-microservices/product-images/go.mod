@@ -1,4 +1,4 @@
-module github.com/anassidr/go-microservices/product-api
+module github.com/anassidr/go-microservices/product-images
 
 go 1.18
 
