@@ -15,5 +15,5 @@
     ![image](https://user-images.githubusercontent.com/109003970/231711286-1ea9c184-c342-4183-8cd4-314acbbfaa80.png)
 - Generating a client with Swagger (see folder sdk):
     - swagger generate client -f ../swagger.yml -A product-api 
-
 - CORS: Allow calls to be made by origins other than the default origin.
+- Multipart requests 
