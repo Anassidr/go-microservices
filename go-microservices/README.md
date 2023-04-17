@@ -17,3 +17,4 @@
     - swagger generate client -f ../swagger.yml -A product-api 
 - CORS: Allow calls to be made by origins other than the default origin.
 - Multipart requests 
+- Gzip compression for HTTP responses (reduce data size vs a little CPU consumption)

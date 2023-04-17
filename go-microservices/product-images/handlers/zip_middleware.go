@@ -22,7 +22,12 @@ func (g *GzipHandler) GzipMiddleware(next http.Handler) http.Handler {
 			// create a gziped response
 			wrw := NewWrappedResponseWriter(rw)
 			wrw.Header().Set("Content-Encoding", "gzip") // tell the client this response needs to be decompressed
+			next.ServeHTTP(wrw, r)
+			defer wrw.Flush()
+			return
 		}
+		// handle normal
+		next.ServeHTTP(rw, r)
 	})
 }
 
@@ -41,13 +46,14 @@ func (wr *WrappedResponseWriter) Header() http.Header {
 }
 
 func (wr *WrappedResponseWriter) Write(d []byte) (int, error) {
-	return wr.gw.Write(d)
+	return wr.gw.Write(d) // Any data that we write is now going to be gzipped
 }
 
 func (wr *WrappedResponseWriter) WriteHeader(statuscode int) {
 	wr.rw.WriteHeader(statuscode)
 }
 
+// flush anything that hasn't been sent out
 func (wr *WrappedResponseWriter) Flush() {
 	wr.gw.Flush()
 	wr.gw.Close()
