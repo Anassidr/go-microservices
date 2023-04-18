@@ -25,3 +25,7 @@ func (c *Currency) GetRate(ctx context.Context, rr *protos.RateRequest) (*protos
 	c.log.Info("Handle GetRate", "base", rr.GetBase(), "destination", rr.GetDestination())
 	return &protos.RateResponse{Rate: 0.5}, nil
 }
+
+func (c *Currency) mustEmbedUnimplementedCurrencyServer() {
+	return
+}

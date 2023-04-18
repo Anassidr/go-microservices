@@ -20,12 +20,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// RateRequest defines the request for a GetRate call
 type RateRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Base        string `protobuf:"bytes,1,opt,name=Base,proto3" json:"Base,omitempty"`
+	// Base is the base currency code for the rate
+	Base string `protobuf:"bytes,1,opt,name=Base,proto3" json:"Base,omitempty"`
+	// Destination is the destination currency code for the rate
 	Destination string `protobuf:"bytes,2,opt,name=Destination,proto3" json:"Destination,omitempty"`
 }
 

@@ -15,8 +15,8 @@ func main() {
 
 	gs := grpc.NewServer()
 	cs := server.NewCurrency(log)
-
 	protos.RegisterCurrencyServer(gs, cs)
+
 	l, err := net.Listen("tcp", ":9092")
 	if err != nil {
 		log.Error("Unable to listen", "error", err)
