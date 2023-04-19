@@ -8,6 +8,7 @@ import (
 	"github.com/anassidr/go-microservices/currency/server"
 	"github.com/hashicorp/go-hclog"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 	cs := server.NewCurrency(log)
 
 	protos.RegisterCurrencyServer(gs, cs)
+
+	reflection.Register(gs) // disable in production
 
 	l, err := net.Listen("tcp", ":9092")
 	if err != nil {
