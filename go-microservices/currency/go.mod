@@ -1,6 +1,6 @@
 module github.com/anassidr/go-microservices/currency
 
-go 1.18
+go 1.20
 
 require (
 	github.com/hashicorp/go-hclog v1.5.0
