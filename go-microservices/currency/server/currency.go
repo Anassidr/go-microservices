@@ -13,8 +13,8 @@ type Currency struct {
 }
 
 // NewCurrency creates a new Currency server
-func NewCurrency(l hclog.Logger) *Currency {
-	return &Currency{l}
+func NewCurrency(l hclog.Logger) Currency {
+	return Currency{l}
 
 }
 
@@ -26,6 +26,4 @@ func (c *Currency) GetRate(ctx context.Context, rr *protos.RateRequest) (*protos
 	return &protos.RateResponse{Rate: 0.5}, nil
 }
 
-func (c *Currency) mustEmbedUnimplementedCurrencyServer() {
-	return
-}
+func (c *Currency) mustEmbedUnimplementedCurrencyServer() {}
