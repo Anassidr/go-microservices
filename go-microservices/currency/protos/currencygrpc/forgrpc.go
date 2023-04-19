@@ -1,0 +1,3 @@
+package currencygrpc
+
+func main() {}
