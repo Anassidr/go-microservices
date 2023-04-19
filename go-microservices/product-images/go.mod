@@ -1,6 +1,6 @@
 module github.com/anassidr/go-microservices/product-images
 
-go 1.18
+go 1.20
 
 require (
 	github.com/anassidr/env v0.0.0-20230414134654-6dae30194789

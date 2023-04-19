@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	protos "github.com/anassidr/go-microservices/currency/protos/currencygrpc"
+	protos "github.com/anassidr/go-microservices/currency/protos/generated"
 	"github.com/hashicorp/go-hclog"
 )
 

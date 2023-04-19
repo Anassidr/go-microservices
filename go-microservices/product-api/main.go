@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	protos "github.com/anassidr/go-microservices/currency/protos/currencygrpc"
+	protos "github.com/anassidr/go-microservices/currency/protos/generated"
 	"github.com/anassidr/go-microservices/product-api/data"
 	"github.com/anassidr/go-microservices/product-api/handlers"
 	"github.com/go-openapi/runtime/middleware"
