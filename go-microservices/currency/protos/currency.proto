@@ -9,9 +9,9 @@ service Currency {
 // RateRequest defines the request for a GetRate call
 message RateRequest {
     // Base is the base currency code for the rate
-    string Base = 1; 
+    Currencies Base = 1; 
     // Destination is the destination currency code for the rate
-    string Destination = 2; 
+    Currencies Destination = 2; 
 
 }
 
@@ -21,4 +21,14 @@ message RateRequest {
 
 message RateResponse {
     float Rate = 1; 
+}
+
+// Currencies is an enum which represents the allowed currencies for the API
+enum Currencies {
+    EUR=0;
+    USD=1;
+    CZK=2;
+    GBP=3;
+    CAD=4;
+    MAD=5;
 }
