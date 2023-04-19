@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	protos "github.com/anassidr/go-microservices/currency/protos/currency"
+	protos "github.com/anassidr/go-microservices/currency/protos/currencygrpc"
 	"github.com/anassidr/go-microservices/product-api/data"
 )
 

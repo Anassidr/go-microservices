@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package="protos/currency";
+option go_package="protos/currencygrpc";
 
 service Currency {
     // GetRate returns the exchange rate for the two provided currency codes

@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: currency.proto
 
-package currency
+package currencygrpc
 
 import (
 	context "context"
