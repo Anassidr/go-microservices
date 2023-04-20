@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	protos "github.com/anassidr/go-microservices/currency/protos/generated"
-
 	"github.com/anassidr/go-microservices/product-api/data"
 	"github.com/gorilla/mux"
 )
