@@ -9,7 +9,6 @@ import (
 	"time"
 
 	protos "github.com/anassidr/go-microservices/currency/protos/generated"
-	"github.com/anassidr/go-microservices/currency/server"
 	"github.com/anassidr/go-microservices/product-api/data"
 	"github.com/anassidr/go-microservices/product-api/handlers"
 	"github.com/go-openapi/runtime/middleware"
@@ -23,9 +22,6 @@ func main() {
 	l := log.New(os.Stdout, "products-api ", log.LstdFlags)
 	v := data.NewValidation()
 
-	ran := server.Currency{}
-
-	l.Printf("%v", ran)
 	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
@@ -99,6 +95,7 @@ func main() {
 	log.Println("Got signal:", sig)
 
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	s.Shutdown(ctx)
 }
