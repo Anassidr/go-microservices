@@ -16,8 +16,9 @@ type ExchangeRates struct {
 
 func NewRates(l hclog.Logger) (*ExchangeRates, error) {
 	er := &ExchangeRates{log: l, rates: map[string]float64{}}
+	err := er.getRates()
 
-	return er, nil
+	return er, err
 }
 
 func (e *ExchangeRates) getRates() error {
