@@ -8,7 +8,11 @@
 - Documenting with Swagger:
     - Creating a spec as swagger.yml
         - http://goswagger.io/use/spec/ 
-            - Comment the handlers using swagger syntax 
+            - Comment the handlers using swagger syntax
+            - Run swagger with its docker image: 
+                - docker pull quay.io/goswagger/swagger
+                - docker run -p 90:8080 swaggerapi/swagger-ui
+                - alias swagger='docker run --rm -it  --user $(id -u):$(id -g) -e GOCACHE=/tmp -e  GOPATH=$(go env GOPATH):/go -v $HOME:$HOME -w $(pwd) quay.io/goswagger/swagger'
             - Initiliaze the spec: swagger init spec 
             - Generate the spec: swagger generate spec -o ./swagger.yml --scan-models
     - Serving the spec in the API path /docs with Redoc

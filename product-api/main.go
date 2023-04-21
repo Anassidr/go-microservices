@@ -43,6 +43,7 @@ func main() {
 
 	// handlers for API
 	getR := sm.Methods(http.MethodGet).Subrouter()
+	getR.HandleFunc("products", ph.ListAll).Queries("currency", "{[A-Z]{3}}")
 	getR.HandleFunc("/products", ph.ListAll)
 	getR.HandleFunc("/products/{id:[0-9]+}", ph.ListSingle)
 

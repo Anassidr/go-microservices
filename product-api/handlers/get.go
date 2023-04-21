@@ -19,7 +19,9 @@ func (p *Products) ListAll(rw http.ResponseWriter, r *http.Request) {
 
 	rw.Header().Add("Content-Type", "application/json")
 
-	prods, err := p.productDB.GetProducts("")
+	cur := r.URL.Query().Get("currency")
+
+	prods, err := p.productDB.GetProducts(cur)
 
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -43,10 +45,11 @@ func (p *Products) ListAll(rw http.ResponseWriter, r *http.Request) {
 // ListSingle handles GET requests
 func (p *Products) ListSingle(rw http.ResponseWriter, r *http.Request) {
 	id := getProductID(r)
+	cur := r.URL.Query().Get("currency")
 
 	p.l.Debug("Get record id", "id", id)
 
-	prod, err := p.productDB.GetProductByID(id, "")
+	prod, err := p.productDB.GetProductByID(id, cur)
 
 	switch err {
 	case nil:
