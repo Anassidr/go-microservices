@@ -1,7 +1,11 @@
 package data
 
 import (
+	"context"
 	"fmt"
+
+	protos "github.com/anassidr/go-microservices/currency/protos/generated"
+	"github.com/hashicorp/go-hclog"
 )
 
 // ErrProductNotFound is an error raised when a product can not be found in the database
@@ -44,9 +48,32 @@ type Product struct {
 // Products defines a slice of Product
 type Products []*Product
 
+type ProductsDB struct {
+	currency protos.CurrencyClient
+	log      hclog.Logger
+}
+
+func NewProductsDB(c protos.CurrencyClient, l hclog.Logger) *ProductsDB {
+	return &ProductsDB{c, l}
+}
+
 // GetProducts returns all products from the database
-func GetProducts() Products {
-	return productList
+func (p *ProductsDB) GetProducts(currency string) Products {
+	if currency == "" {
+		return productList
+	}
+
+	rr := &protos.RateRequest{
+		Base:        protos.Currencies(protos.Currencies_value["EUR"]),
+		Destination: protos.Currencies(protos.Currencies_value["GBP"]),
+	}
+
+	resp, err := p.currency.GetRate(context.Background(), rr)
+	if err != nil {
+		p.l.Println("[Error] error getting new rate", err)
+		data.ToJSON(&GenericError{Message: err.Error()}, rw)
+	}
+	p.currency.GetRate()
 }
 
 // GetProductByID returns a single product which matches the id from the
