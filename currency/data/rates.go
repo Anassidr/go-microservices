@@ -26,15 +26,19 @@ func NewRates(l hclog.Logger) (*ExchangeRates, error) {
 func (e *ExchangeRates) GetRate(base string, dest string) (float64, error) {
 	br, ok := e.rates[base]
 	if !ok {
-		return 0, fmt.Errorf("Rate not found for currency %s", base)
+		return 0, fmt.Errorf("rate not found for currency %s", base)
 	}
 
 	dr, ok := e.rates[dest]
 	if !ok {
-		return 0, fmt.Errorf("Rate not found for currency %s", dest)
+		return 0, fmt.Errorf("rate not found for currency %s", dest)
 	}
 	return dr / br, nil
 }
+
+// MonitorRates checks the rates in the ECB API every interval and sends a message to the returned channel
+// when there are changes
+// Given that the CB API only returns data once a day, this functions simulates changes randomly
 
 func (e *ExchangeRates) MonitorRates(interval time.Duration) chan struct{} {
 	ret := make(chan struct{})
@@ -45,10 +49,11 @@ func (e *ExchangeRates) MonitorRates(interval time.Duration) chan struct{} {
 			select {
 			case <-ticker.C:
 				for k, v := range e.rates {
+					// random change in the rate; simulate the real-life fluctuations
 					// change can be 10% of original value
 					change := (rand.Float64() / 10)
 					// is this a positive or negative change
-					direction := rand.Intn(1)
+					direction := rand.Intn(2)
 
 					if direction == 0 {
 						// new value will be min 90% of old
@@ -61,6 +66,7 @@ func (e *ExchangeRates) MonitorRates(interval time.Duration) chan struct{} {
 					e.rates[k] = v * change
 				}
 				// notify updates, this will block unless there is a listener on the other end
+				// sending an empty struct to signal that an update has occured
 				ret <- struct{}{}
 			}
 		}
@@ -68,18 +74,21 @@ func (e *ExchangeRates) MonitorRates(interval time.Duration) chan struct{} {
 	return ret
 }
 
+// Consuming the API of ECB
+
 func (e *ExchangeRates) getRates() error {
 	resp, err := http.DefaultClient.Get("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml")
 	if err != nil {
 		return nil
 	}
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Expected error code 200, got %d", resp.StatusCode)
+		return fmt.Errorf("expected error code 200, got %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
 
 	md := &Cubes{}
 	// NewDecoder wants an io Reader, we get it from resp.Body
+	// Unmarsheling the XML data
 	xml.NewDecoder(resp.Body).Decode(&md)
 
 	for _, c := range md.CubeData {
