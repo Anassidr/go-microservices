@@ -153,11 +153,14 @@ func findIndexByProductID(id int) int {
 
 func (p *ProductsDB) getRate(destination string) (float64, error) {
 
+	// new protos.RateRequest object is created
+
 	rr := &protos.RateRequest{
 		Base:        protos.Currencies(protos.Currencies_value["EUR"]),
 		Destination: protos.Currencies(protos.Currencies_value[destination]),
 	}
 
+	// object is used to call the gRPC service method GetRate()
 	resp, err := p.currency.GetRate(context.Background(), rr)
 	return resp.Rate, err
 }
