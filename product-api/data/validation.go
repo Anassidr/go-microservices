@@ -7,8 +7,8 @@ import (
 	"github.com/go-playground/validator"
 )
 
-// ValidationError wraps the validators FieldError so we do not
-// expose this to out code
+// ValidationError wraps the validators FieldError so we do not expose this to out code
+// providing a simplified interface that the user can use without worrying about the implementation details of the package
 type ValidationError struct {
 	validator.FieldError
 }
@@ -36,6 +36,9 @@ func (v ValidationErrors) Errors() []string {
 }
 
 // Validation contains
+// Wrapping the validator object in the Validation struct allows us to
+// hide the details of the validator.Validate implementation from the rest of the application
+
 type Validation struct {
 	validate *validator.Validate
 }
@@ -45,6 +48,7 @@ func NewValidation() *Validation {
 	validate := validator.New()
 	validate.RegisterValidation("sku", validateSKU)
 
+	// create a new instance of the Validation struct
 	return &Validation{validate}
 }
 
@@ -65,6 +69,9 @@ func NewValidation() *Validation {
 //				fmt.Println(ve.Param())
 //				fmt.Println()
 //		}
+
+// takes an input as an interface, meant to be a general-purpose validation method
+// can be used to validate any arbitrary struct
 func (v *Validation) Validate(i interface{}) ValidationErrors {
 	errs := v.validate.Struct(i).(validator.ValidationErrors)
 
@@ -88,9 +95,6 @@ func validateSKU(fl validator.FieldLevel) bool {
 	re := regexp.MustCompile(`[a-z]+-[a-z]+-[a-z]+`)
 	sku := re.FindAllString(fl.Field().String(), -1)
 
-	if len(sku) == 1 {
-		return true
-	}
+	return len(sku) == 1
 
-	return false
 }
