@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	protos "github.com/anassidr/go-microservices/currency/protos/generated"
@@ -16,14 +17,17 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/go-hclog"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
 
+	// using the global logger
 	l := hclog.Default()
+
 	v := data.NewValidation()
 
-	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:9092", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
@@ -90,16 +94,19 @@ func main() {
 		}
 	}()
 
-	// trap sigterm or interupt and gracefully shutdown the server
+	// trap sigterm or interrupt and gracefully shutdown the server
+	// Listening for the os.Interrupt and os.Kill signals
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
-	signal.Notify(c, os.Kill)
+	signal.Notify(c, syscall.SIGTERM)
 
 	// Block until a signal is received.
+	// Using the channel operator to receive the signal from our c channel
 	sig := <-c
 	log.Println("Got signal:", sig)
 
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
+	// timeout is used to cancel any running requests and wait for them to finish before shutting down the server
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	s.Shutdown(ctx)
