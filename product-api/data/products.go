@@ -6,6 +6,8 @@ import (
 
 	protos "github.com/anassidr/go-microservices/currency/protos/generated"
 	"github.com/hashicorp/go-hclog"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // ErrProductNotFound is an error raised when a product can not be found in the database
@@ -190,6 +192,23 @@ func (p *ProductsDB) getRate(destination string) (float64, error) {
 	// object is used to call the gRPC service method GetRate()
 	// get initial rate
 	resp, err := p.currency.GetRate(context.Background(), rr)
+
+	// attempt to extract additional error details from the error returned by the gRPC service
+	if err != nil {
+
+		//  check whether the error can be converted to a status object
+		if s, ok := status.FromError(err); ok {
+
+			// extract the RateRequest object from the error details
+			md := s.Details()[0].(*protos.RateRequest)
+			if s.Code() == codes.InvalidArgument {
+				return -1, fmt.Errorf("unable to get rate from currency server, destination and base currencies cannot be the same, base %s, dest %s", md.Base.String(), md.Destination.String())
+
+			}
+			return -1, fmt.Errorf("unable to get rate from currency server, base %s, dest %s", md.Base.String(), md.Destination.String())
+		}
+
+	}
 	// update cache
 	p.rates[destination] = resp.Rate
 
